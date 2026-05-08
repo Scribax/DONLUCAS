@@ -33,8 +33,7 @@ export async function POST(req: NextRequest) {
         price: parseFloat(price),
         stock: parseInt(stock),
         imageUrl,
-        weight,
-        slug: slug || name.toLowerCase().replace(/ /g, "-")
+        weight
       }
     });
 

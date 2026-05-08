@@ -181,8 +181,8 @@ export default function AdminCouponsPage() {
             </div>
 
             <div className="mt-6 pt-4 border-t border-dotted border-kraft-100 flex justify-between items-center">
-              <span className={`text-[10px] uppercase font-black px-2 py-1 rounded-full ${coupon.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {coupon.isActive ? 'Activo' : 'Inactivo'}
+              <span className={`text-[10px] uppercase font-black px-2 py-1 rounded-full ${coupon.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {coupon.active ? 'Activo' : 'Inactivo'}
               </span>
               <span className="text-[10px] text-kraft-300">ID: {coupon.id.slice(-6)}</span>
             </div>

@@ -61,17 +61,24 @@ export default function AdminZoneMap({
         <MapEvents />
 
         {/* Zonas existentes */}
-        {existingZones.map((zone) => (
-          <Polygon 
-            key={zone.id} 
-            positions={zone.coordinates} 
-            pathOptions={{ color: zone.color, fillColor: zone.color, fillOpacity: 0.3 }}
-          >
-            <Tooltip permanent direction="center" className="bg-white/80 border-none shadow-none font-bold text-xs p-1 rounded">
-              {zone.name} (${zone.price})
-            </Tooltip>
-          </Polygon>
-        ))}
+        {existingZones.filter(z => z.coordinates && Array.isArray(z.coordinates) && z.coordinates.length > 0).map((zone) => {
+          // Asegurarnos de que las coordenadas tengan el formato [lat, lng] que espera Leaflet
+          const positions = zone.coordinates.map((p: any) => 
+            Array.isArray(p) ? p : [p.lat, p.lng]
+          );
+          
+          return (
+            <Polygon 
+              key={zone.id} 
+              positions={positions} 
+              pathOptions={{ color: zone.color || '#16a34a', fillColor: zone.color || '#16a34a', fillOpacity: 0.3 }}
+            >
+              <Tooltip permanent direction="center" className="bg-white/80 border-none shadow-none font-bold text-xs p-1 rounded">
+                {zone.name} (${zone.price})
+              </Tooltip>
+            </Polygon>
+          );
+        })}
 
         {/* Zona actual en dibujo */}
         {points.length > 0 && (

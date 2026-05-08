@@ -13,7 +13,7 @@ export async function PATCH(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
 
     const product = await prisma.product.update({
@@ -41,7 +41,7 @@ export async function DELETE(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { id } = params;
+    const { id } = await params;
     await prisma.product.delete({ where: { id } });
     
     return NextResponse.json({ message: "Eliminado" });

@@ -53,7 +53,7 @@ export default async function AdminDashboard() {
 
     return {
       date: dateStr,
-      total: daySales.reduce((acc, s) => acc + s.totalAmount, 0),
+      total: daySales.reduce((acc, s: any) => acc + s.totalAmount, 0),
       count: daySales.length
     };
   });

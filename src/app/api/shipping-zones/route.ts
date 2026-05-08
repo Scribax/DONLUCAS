@@ -8,7 +8,11 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const zones = await prisma.shippingZone.findMany();
-    return NextResponse.json({ zones });
+    const parsedZones = zones.map(z => ({
+      ...z,
+      coordinates: z.coordinates ? JSON.parse(z.coordinates) : []
+    }));
+    return NextResponse.json({ zones: parsedZones });
   } catch (error) {
     return NextResponse.json({ zones: [], error: "Error al obtener zonas" }, { status: 500 });
   }
@@ -27,14 +31,15 @@ export async function POST(req: NextRequest) {
       data: { 
         name, 
         price: parseFloat(price.toString()), 
-        coordinates, 
+        coordinates: JSON.stringify(coordinates), 
         color: color || "#166534" 
       }
     });
 
     return NextResponse.json(zone);
-  } catch (error) {
-    return NextResponse.json({ error: "Error al crear zona" }, { status: 500 });
+  } catch (error: any) {
+    console.error("❌ Error al crear zona:", error);
+    return NextResponse.json({ error: error.message || "Error al crear zona" }, { status: 500 });
   }
 }
 
