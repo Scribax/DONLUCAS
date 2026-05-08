@@ -1,9 +1,5 @@
 import Link from "next/link";
 import { 
-  ArrowRight, 
-  MessageCircle, 
-  Leaf, 
-  Bird, 
   ShoppingBasket, 
   Truck, 
   Egg,
@@ -11,14 +7,22 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { prisma } from "@/lib/prisma";
-
 import ShippingMapLandingWrapper from '@/components/ShippingMapLandingWrapper';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
-  const featuredProducts = await prisma.product.findMany({ take: 3 });
-  const shippingZones = await prisma.shippingZone.findMany({
-    orderBy: { price: 'asc' }
-  });
+  let featuredProducts = [];
+  let shippingZones = [];
+  
+  try {
+    featuredProducts = await prisma.product.findMany({ take: 3 });
+    shippingZones = await prisma.shippingZone.findMany({
+      orderBy: { price: 'asc' }
+    });
+  } catch (e) {
+    console.error("DB connection failed during build");
+  }
 
   return (
     <div className="flex flex-col w-full">

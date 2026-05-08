@@ -2,15 +2,23 @@ import ProductCard from "@/components/ProductCard";
 import { Egg } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Catálogo de Productos | DON LUCAS",
   description: "Compra huevos marrones de gallinas de campo frescos y naturales en San Rafael.",
 };
 
 export default async function ProductosPage() {
-  const products = await prisma.product.findMany({
-    orderBy: { name: 'asc' }
-  });
+  let products = [];
+  try {
+    products = await prisma.product.findMany({
+      orderBy: { name: 'asc' }
+    });
+  } catch (e) {
+    console.error("DB connection failed during build");
+  }
+
   return (
     <div className="container mx-auto px-4 py-12 flex-1">
       <div className="flex flex-col items-center text-center mb-12">
