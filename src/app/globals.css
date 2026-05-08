@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-kraft-900: #3E2723;
+  --color-kraft-800: #4E342E;
+  --color-kraft-700: #5D4037;
+  --color-kraft-600: #6D4C41;
+  --color-kraft-500: #795548;
+  --color-kraft-400: #8D6E63;
+  --color-kraft-300: #A1887F;
+  --color-kraft-200: #BCAAA4;
+  --color-kraft-100: #D7CCC8;
+  --color-kraft-50: #EFEBE9;
+  
+  --color-nature-900: #33691E;
+  --color-nature-800: #558B2F;
+  --color-nature-700: #689F38;
+  --color-nature-600: #7CB342;
+  --color-nature-500: #8BC34A;
+  --color-nature-400: #9CCC65;
+  --color-nature-300: #AED581;
+  --color-nature-200: #C5E1A5;
+  --color-nature-100: #DCEDC8;
+  --color-nature-50: #F1F8E9;
+
+  --color-background: #FDFBF7;
+  --color-foreground: #3E2723;
+  
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --kraft-900: #4E342E;
+  --kraft-700: #6D4C41;
+  --kraft-500: #8D6E63;
+  --kraft-200: #D7CCC8;
+  --kraft-50: #F5F5DC;
+  --nature-600: #6B8E23;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Fix Leaflet map sizing */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
 }

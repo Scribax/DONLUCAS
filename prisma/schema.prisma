@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String? // Nullable si usamos OAuth luego
+  phone     String?
+  role      Role     @default(CUSTOMER)
+  points    Int      @default(0)
+  couponId    String?
+  coupon      Coupon?  @relation(fields: [couponId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String
+  price       Float
+  stock       Int         @default(0)
+  imageUrl    String?
+  weight      String? // ej: "Aprox. 1.8kg"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id])
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  address        String
+  latitude       Float?
+  longitude      Float?
+  status         OrderStatus @default(PENDING)
+  totalAmount    Float
+  shippingCost   Float       @default(0)
+  paymentMethod  String      @default("MERCADOPAGO") // MERCADOPAGO, WHATSAPP
+  paymentId      String? // Referencia de MercadoPago
+  distance       Float? // Distancia en km
+  pointsEarned   Int         @default(0)
+  pointsUsed     Int         @default(0)
+  couponId       String?
+  coupon         Coupon?     @relation(fields: [couponId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float // Precio al momento de la compra
+}
+
+model ShippingZone {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float
+  coordinates Json // Array de puntos [{lat, lng}, ...]
+  color       String   @default("#166534") // Color del polígono en el mapa
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Float    // Puede ser monto fijo o porcentaje
+  type        String   @default("FIXED") // FIXED o PERCENT
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usedCount   Int      @default(0)
+  orders      Order[]
+  users       User[]
+  createdAt   DateTime @default(now())
+}
+
+model Promotion {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  pointsCost  Int      @default(0)
+  discount    Float? // Monto de descuento o porcentaje
+  freeProduct String? // Nombre o ID del producto gratis
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
