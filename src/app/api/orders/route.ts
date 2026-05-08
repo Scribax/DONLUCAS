@@ -14,6 +14,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No hay productos en el pedido" }, { status: 400 });
     }
 
+    // Limpieza y validación de IDs para evitar Foreign Key Constraint errors
+    // Si el usuario tiene un carrito antiguo, las IDs no existirán en la nueva DB.
+    for (const item of items) {
+      const exists = await prisma.product.findUnique({ where: { id: item.id } });
+      if (!exists) {
+        return NextResponse.json({ 
+          error: "Un producto de tu carrito ya no existe en la tienda. Por favor, vacía tu carrito y vuelve a agregarlo." 
+        }, { status: 400 });
+      }
+    }
+
     const orderData: any = {
       customerName: customer.name,
       customerEmail: session?.user?.email ?? "invitado@donlucas.com",
@@ -128,8 +139,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: `/checkout/exito?orderId=${order.id}`, orderId: order.id }, { status: 201 });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating order:", error);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    // Si Prisma tira error de Foreign Key
+    if (error.code === 'P2003') {
+       return NextResponse.json({ error: "Datos desactualizados. Limpia el caché o el carrito e intenta de nuevo." }, { status: 400 });
+    }
+    return NextResponse.json({ error: error.message || "Error interno del servidor" }, { status: 500 });
   }
 }

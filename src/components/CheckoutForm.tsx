@@ -54,11 +54,16 @@ export default function CheckoutForm({ shippingZones }: { shippingZones: Shippin
       });
 
       const data = await response.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
       if (data.url) {
         window.location.href = data.url; // Redirigir a MercadoPago
       }
     } catch (error) {
       console.error("Error al procesar el pago", error);
+      alert("Hubo un error de conexión. Inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
