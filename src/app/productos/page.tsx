@@ -45,6 +45,7 @@ export default async function ProductosPage() {
             name={product.name}
             description={product.description}
             price={product.price}
+            imageUrl={product.imageUrl}
           />
         ))}
       </div>
