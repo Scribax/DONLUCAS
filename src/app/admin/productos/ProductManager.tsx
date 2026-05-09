@@ -18,6 +18,7 @@ export default function ProductManager({ initialProducts }: { initialProducts: a
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const openForm = (product: any = null) => {
     setCurrentProduct(product || { name: "", description: "", price: "", stock: "", imageUrl: "", weight: "" });
@@ -58,6 +59,37 @@ export default function ProductManager({ initialProducts }: { initialProducts: a
       alert("Error al guardar el producto");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("La imagen es muy grande. El límite es 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Error al subir imagen");
+      
+      const data = await res.json();
+      setCurrentProduct({ ...currentProduct, imageUrl: data.url });
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al subir la imagen.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -191,15 +223,37 @@ export default function ProductManager({ initialProducts }: { initialProducts: a
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-kraft-700 mb-1">Imagen (URL)</label>
-                  <input 
-                    type="text" 
-                    value={currentProduct.imageUrl}
-                    onChange={e => setCurrentProduct({...currentProduct, imageUrl: e.target.value})}
-                    className="w-full p-3 border border-kraft-200 rounded-xl focus:ring-2 focus:ring-nature-600 outline-none"
-                    placeholder="https://..."
-                  />
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-bold text-kraft-700 mb-2">Imagen del Producto</label>
+                  <div className="flex gap-4 items-start">
+                    {currentProduct.imageUrl && (
+                      <div className="w-24 h-24 relative rounded-xl overflow-hidden border border-kraft-200 flex-shrink-0 shadow-sm">
+                        <Image src={currentProduct.imageUrl} alt="Preview" fill className="object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1 space-y-3">
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={isUploading}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        <div className={`w-full p-4 border-2 border-dashed border-nature-600 rounded-xl flex items-center justify-center gap-2 text-nature-600 bg-nature-50 hover:bg-nature-100 transition shadow-sm ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                          <ImageIcon className="w-5 h-5" />
+                          <span className="font-bold">{isUploading ? "Subiendo archivo..." : "Subir foto desde tu dispositivo"}</span>
+                        </div>
+                      </div>
+                      <input 
+                        type="text" 
+                        value={currentProduct.imageUrl}
+                        onChange={e => setCurrentProduct({...currentProduct, imageUrl: e.target.value})}
+                        className="w-full p-3 text-sm border border-kraft-200 rounded-xl focus:ring-2 focus:ring-nature-600 outline-none"
+                        placeholder="O puedes pegar el enlace (URL) de una imagen..."
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>
