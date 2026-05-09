@@ -67,14 +67,17 @@ export default function Navbar() {
             <User className="w-6 h-6" />
           </Link>
           
-          <Link href="/carrito" className="relative group p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300">
+          <button 
+            onClick={() => useCartStore.getState().openCart()}
+            className="relative group p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300"
+          >
             <ShoppingCart className="w-6 h-6 group-hover:text-nature-400 transition-colors" />
             {cartItemsCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-nature-600 text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-kraft-900 animate-in zoom-in duration-300">
                 {cartItemsCount}
               </span>
             )}
-          </Link>
+          </button>
 
           {/* Mobile Menu Toggle */}
           <button

@@ -11,10 +11,13 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
+  isOpen: boolean;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+  openCart: () => void;
+  closeCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
@@ -23,6 +26,9 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
+      openCart: () => set({ isOpen: true }),
+      closeCart: () => set({ isOpen: false }),
       addItem: (newItem) => {
         set((state) => {
           const existingItem = state.items.find((item) => item.id === newItem.id);
@@ -60,6 +66,8 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'don-lucas-cart',
+      // No persistir el estado de si está abierto o cerrado al recargar la página
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

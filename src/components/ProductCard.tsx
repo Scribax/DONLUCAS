@@ -15,11 +15,13 @@ interface ProductCardProps {
 
 export default function ProductCard({ id, name, description, price, imageUrl }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
     addItem({ id, name, price, quantity: 1, imageUrl });
     setAdded(true);
+    openCart();
     setTimeout(() => setAdded(false), 2000);
   };
 
