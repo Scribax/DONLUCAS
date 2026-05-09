@@ -92,7 +92,7 @@ export default async function CuentaPage() {
                       <div>
                         <div className="flex items-center gap-3 mb-1">
                           <span className="font-bold text-kraft-900">#{order.id.slice(-6).toUpperCase()}</span>
-                          <span className="text-sm text-kraft-500">
+                          <span className="text-sm text-kraft-500" suppressHydrationWarning>
                             {new Date(order.createdAt).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </span>
                         </div>

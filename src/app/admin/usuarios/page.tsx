@@ -71,7 +71,7 @@ export default async function AdminUsersPage() {
                   <td className="p-4 text-center font-bold text-kraft-700">
                     {user._count.orders}
                   </td>
-                  <td className="p-4 text-right text-kraft-500 text-sm">
+                  <td className="p-4 text-right text-kraft-500 text-sm" suppressHydrationWarning>
                     {new Date(user.createdAt).toLocaleDateString('es-AR')}
                   </td>
                 </tr>
