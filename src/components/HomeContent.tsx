@@ -53,7 +53,7 @@ export default function HomeContent({ products, shippingZones }: HomeContentProp
                 </Link>
                 <Link
                   href="#zonas"
-                  className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-12 py-5 rounded-full font-bold text-xl transition-all"
+                  className="bg-white/80 hover:bg-white backdrop-blur-md text-kraft-900 border border-kraft-200 px-12 py-5 rounded-full font-bold text-xl transition-all shadow-sm"
                 >
                   Ver Zonas
                 </Link>
