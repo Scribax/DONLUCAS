@@ -162,8 +162,8 @@ export default function ProductManager({ initialProducts }: { initialProducts: a
       {/* Modal de Edición/Creación */}
       {isEditing && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div className="bg-kraft-900 p-6 text-white flex justify-between items-center">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="bg-kraft-900 p-6 text-white flex justify-between items-center flex-shrink-0">
               <h2 className="font-serif text-xl font-bold">
                 {currentProduct.id ? "Editar Producto" : "Nuevo Producto"}
               </h2>
@@ -172,7 +172,7 @@ export default function ProductManager({ initialProducts }: { initialProducts: a
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-kraft-700 mb-1">Nombre del Producto</label>
