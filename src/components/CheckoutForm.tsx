@@ -11,7 +11,15 @@ interface ShippingZone {
   price: number;
 }
 
-export default function CheckoutForm({ shippingZones }: { shippingZones: ShippingZone[] }) {
+export default function CheckoutForm({ 
+  shippingZones, 
+  userPoints = 0, 
+  pointValueInPeso = 1.0 
+}: { 
+  shippingZones: ShippingZone[], 
+  userPoints?: number, 
+  pointValueInPeso?: number 
+}) {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [selectedZone, setSelectedZone] = useState<ShippingZone | null>(null);
@@ -29,7 +37,17 @@ export default function CheckoutForm({ shippingZones }: { shippingZones: Shippin
 
   const subtotal = getTotalPrice();
   const shippingCost = selectedZone?.price || 0;
-  const pointsDiscount = usePoints ? 500 : 0; // Ejemplo: 500 pesos de descuento por puntos
+  
+  // Calculate dynamic discount
+  // Limit discount so it doesn't exceed the subtotal (can't have negative total)
+  const maxDiscountAllowed = subtotal; 
+  const potentialDiscount = userPoints * pointValueInPeso;
+  const actualDiscount = Math.min(potentialDiscount, maxDiscountAllowed);
+  const pointsDiscount = usePoints ? actualDiscount : 0; 
+  
+  // How many points were actually consumed?
+  const pointsActuallyUsed = usePoints && pointValueInPeso > 0 ? Math.ceil(pointsDiscount / pointValueInPeso) : 0;
+
   const total = subtotal + shippingCost - pointsDiscount;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,7 +67,7 @@ export default function CheckoutForm({ shippingZones }: { shippingZones: Shippin
           shippingCost,
           totalAmount: total,
           paymentMethod: "MERCADOPAGO",
-          usePoints
+          pointsUsed: pointsActuallyUsed
         })
       });
 
@@ -146,12 +164,17 @@ export default function CheckoutForm({ shippingZones }: { shippingZones: Shippin
               </div>
               <div>
                 <p className="font-bold text-gray-900">¿Usar tus puntos?</p>
-                <p className="text-sm text-nature-700">Tenés 1500 puntos disponibles</p>
+                <p className="text-sm text-nature-700">
+                  Tenés {userPoints} puntos disponibles 
+                  {userPoints > 0 && ` (equivale a $${(userPoints * pointValueInPeso).toLocaleString('es-AR')})`}
+                </p>
               </div>
             </div>
             <button 
+              type="button"
               onClick={() => setUsePoints(!usePoints)}
-              className={`w-12 h-6 rounded-full transition-all relative ${usePoints ? 'bg-nature-600' : 'bg-gray-300'}`}
+              disabled={userPoints === 0}
+              className={`w-12 h-6 rounded-full transition-all relative ${usePoints ? 'bg-nature-600' : 'bg-gray-300'} ${userPoints === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${usePoints ? 'left-7' : 'left-1'}`} />
             </button>

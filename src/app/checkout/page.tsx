@@ -13,15 +13,29 @@ const MOCK_ZONES = [
 
 export default async function CheckoutPage() {
   let shippingZones = [];
+  let userPoints = 0;
+  let pointValueInPeso = 1.0;
 
   try {
+    const { getServerSession } = await import("next-auth/next");
+    const { authOptions } = await import("@/lib/auth");
+    
+    const session = await getServerSession(authOptions);
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+      if (user) userPoints = user.points;
+    }
+
+    const settings = await prisma.settings.findUnique({ where: { id: "global" } });
+    if (settings) pointValueInPeso = settings.pointValueInPeso;
+
     shippingZones = await prisma.shippingZone.findMany({
       orderBy: { name: 'asc' }
     });
     // Si la DB está vacía, usamos mocks
     if (shippingZones.length === 0) shippingZones = MOCK_ZONES;
   } catch (e) {
-    console.log("Modo Demo: Usando zonas de prueba.");
+    console.log("Error cargando checkout data", e);
     shippingZones = MOCK_ZONES;
   }
 
@@ -39,7 +53,11 @@ export default async function CheckoutPage() {
             </div>
           </div>
           
-          <CheckoutForm shippingZones={shippingZones} />
+          <CheckoutForm 
+            shippingZones={shippingZones} 
+            userPoints={userPoints} 
+            pointValueInPeso={pointValueInPeso} 
+          />
         </div>
       </div>
     </div>

@@ -90,3 +90,10 @@ model Coupon {
   createdAt       DateTime  @default(now())
   orders          Order[]
 }
+
+model Settings {
+  id               String   @id @default("global")
+  cashbackPercent  Float    @default(0.05) // Porcentaje de la compra que se devuelve en puntos
+  pointValueInPeso Float    @default(1.0)  // Cuántos pesos vale 1 punto
+  updatedAt        DateTime @updatedAt
+}

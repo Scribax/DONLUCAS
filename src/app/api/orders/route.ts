@@ -79,9 +79,12 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // PASO 2: Otorgar 5% del valor de la compra en puntos (Cashback)
+    // PASO 2: Otorgar valor de la compra en puntos (Cashback)
     if (session?.user && (session.user as any).id) {
-      const pointsEarned = Math.floor(totalAmount * 0.05);
+      const settings = await prisma.settings.findUnique({ where: { id: "global" } });
+      const cashbackPercent = settings?.cashbackPercent ?? 0.05;
+      const pointsEarned = Math.floor(totalAmount * cashbackPercent);
+      
       await prisma.user.update({
         where: { id: (session.user as any).id },
         data: {

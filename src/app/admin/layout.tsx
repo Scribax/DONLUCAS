@@ -68,6 +68,13 @@ export default function AdminLayout({
             <Users className="w-5 h-5" />
             <span>Usuarios</span>
           </Link>
+          <Link 
+            href="/admin/configuracion" 
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-kraft-800 transition text-kraft-100"
+          >
+            <Settings className="w-5 h-5" />
+            <span>Configuración</span>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-kraft-800">
