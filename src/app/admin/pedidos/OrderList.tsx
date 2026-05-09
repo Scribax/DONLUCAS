@@ -56,7 +56,7 @@ export default function OrderList({ initialOrders }: { initialOrders: any[] }) {
                   <span className={`text-xs px-2 py-1 rounded-full font-bold ${STATUS_STYLES[order.status]?.color}`}>
                     {STATUS_STYLES[order.status]?.label}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500" suppressHydrationWarning>
                     {new Date(order.createdAt).toLocaleString('es-AR')}
                   </span>
                 </div>

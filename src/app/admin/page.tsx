@@ -96,7 +96,10 @@ export default async function AdminDashboard() {
           <h1 className="font-serif text-4xl font-bold text-kraft-900">Panel de Control</h1>
           <p className="text-kraft-600 mt-2">Bienvenido de nuevo, Franco. Esto es lo que está pasando hoy.</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-2xl border border-kraft-100 flex items-center gap-2 text-kraft-500 text-sm font-medium shadow-sm">
+        <div 
+          suppressHydrationWarning
+          className="bg-white px-4 py-2 rounded-2xl border border-kraft-100 flex items-center gap-2 text-kraft-500 text-sm font-medium shadow-sm"
+        >
           <Calendar className="w-4 h-4" />
           {new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })}
         </div>
@@ -138,7 +141,9 @@ export default async function AdminDashboard() {
                   </div>
                   <div>
                     <p className="font-bold text-kraft-900">{order.user?.name || 'Invitado'}</p>
-                    <p className="text-xs text-kraft-500">{new Date(order.createdAt).toLocaleString()}</p>
+                    <span className="text-xs text-gray-500" suppressHydrationWarning>
+                      {new Date(order.createdAt).toLocaleString('es-AR')}
+                    </span>
                   </div>
                 </div>
                 <div className="text-right">
