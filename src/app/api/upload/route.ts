@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
 export async function POST(req: NextRequest) {
@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
     
     // La ruta absoluta donde se guardará (en el servidor de producción será relativa a la carpeta raíz del proyecto)
     const uploadDir = path.join(process.cwd(), "public", "uploads");
+    
+    // Asegurarse de que el directorio exista (crea la carpeta de forma recursiva si no existe)
+    await mkdir(uploadDir, { recursive: true });
     
     await writeFile(path.join(uploadDir, filename), buffer);
 
