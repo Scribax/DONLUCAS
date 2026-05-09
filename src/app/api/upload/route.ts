@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
     
     await writeFile(path.join(uploadDir, filename), buffer);
 
-    // Retornamos la URL relativa que se usará para mostrar la imagen en el frontend
-    const fileUrl = `/uploads/${filename}`;
+    // Retornamos la URL usando nuestra nueva ruta API dinámica para que Next.js pueda servirla inmediatamente
+    const fileUrl = `/api/uploads/${filename}`;
 
     return NextResponse.json({ url: fileUrl });
   } catch (error) {
